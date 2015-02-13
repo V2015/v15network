@@ -48,6 +48,11 @@ app.post('/api/reportStatus', function (req, res){
 	});
 });
 
+app.post('/api/test', function (req, res){
+	console.log(JSON.stringify(req.params));
+	res.sendStatus(200);
+});
+
 
 app.use(express.static(path.join(__dirname, 'public')));
 
