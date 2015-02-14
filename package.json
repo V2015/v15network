@@ -1,0 +1,32 @@
+{
+  "name": "vinder15",
+  "version": "0.1.0",
+  "description": "Israeli elections system - 2015",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "body-parser": "1.4.3",
+    "cookie-parser": "1.3.2",
+    "express": "^4.11.2",
+    "express-session": "^1.10.2",
+    "morgan": "1.5.1",
+    "mysql": "2.5.4"
+  },
+  "engines": {
+    "node": "0.10.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/V2015/vinder"
+  },
+  "keywords": [
+    "elections",
+    "Israel",
+    "2015"
+  ],
+  "author": "V15",
+  "contributors": [],
+  "license": "MIT"
+}
