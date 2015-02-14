@@ -1,5 +1,5 @@
 
-var site = angular.module('site', []);//['ngRoute','ui.bootstrap']
+var site = angular.module('site', ['ui.router']);//['ngRoute','ui.bootstrap']
 
 // site.config(function($routeProvider) {
 //     $routeProvider
@@ -9,6 +9,24 @@ var site = angular.module('site', []);//['ngRoute','ui.bootstrap']
 //             controller  : 'mainController'
 //         });
 // });
+
+site.config(function($stateProvider, $urlRouterProvider) {
+  //
+  // For any unmatched url, redirect to /login
+  $urlRouterProvider.otherwise("/login");
+  //
+  // Now set up the states
+  $stateProvider
+    .state('login', {
+      url: "/login",
+      templateUrl: "pages/login.html"
+    })
+    .state('swipe', {
+      url: "/swipe",
+      templateUrl: "pages/swipe.html",
+      controller: 'mainController'
+    })
+});
 
 // site.config(function ($httpProvider) {
 //     $httpProvider.interceptors.push('authInterceptor');
