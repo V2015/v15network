@@ -7,6 +7,7 @@ var express = require('express');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var logger = require('morgan');
+var session = require('express-session');
 
 var dbTools = require('./dbTools');
 
@@ -18,18 +19,30 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+app.use(session({
+	secret: 'vinder15'
+}));
+
 app.post('/api/reportList', function (req, res){
+	if ((!req.session.user || !req.session.user.facebookId) && req.param('reporter')){
+		req.session.user = {
+			facebookId 	: req.param('reporter').facebookId
+		};
+	}
+
 	dbTools.newReporter(req.param('reporter'), function (err, results){
 		if (err){
 			console.log(err);
-			res.send(500, 'Unknown error');
+			res.sendStatus(500, 'Unknown error');
 		} else {
-			dbTools.reportArray(results.insertId, req,param('contacts'), function (err, results){
+			req.session.user.id = results.insertId;
+
+			dbTools.reportArray(req.session.user.facebookId, req,param('contacts'), function (err, results){
 				if (err){
 					console.log(err);
-					res.send(500, 'Unknown error');
+					res.sendStatus(500, 'Unknown error');
 				} else {
-					res.send(200);
+					res.sendStatus(200);
 				}
 			});
 		}
@@ -38,18 +51,31 @@ app.post('/api/reportList', function (req, res){
 
 
 app.post('/api/reportStatus', function (req, res){
-	dbTools.tagFriend(req.param('reporter').imei, req.param('contact'), function (err, results){
+	var facebookId;
+	if (req.param('reporter') && req.param('reporter').facebookId){
+		facebookId = req.param('reporter').facebookId;
+	} else if (req.session && req.session.user) {
+		facebookId = req.session.user.facebookId;
+	}
+
+	if (!facebookId){
+		// TODO: user not logged in
+		res.sendStatus(400);
+		return;
+	}
+
+	dbTools.tagFriend(facebookId, req.param('contact'), function (err, results){
 		if (err){
 			console.log(err);
-			res.send(500, 'Unknown error');
+			res.sendStatus(500, 'Unknown error');
 		} else {
-			res.send(200);
+			res.sendStatus(200);
 		}
 	});
 });
 
 app.post('/api/test', function (req, res){
-	console.log(JSON.stringify(req.params));
+	console.log(JSON.stringify(req.param('mush')));
 	res.sendStatus(200);
 });
 

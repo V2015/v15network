@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html ng-app="vinderPostTest">
+<head>
+<title></title>
+<script src="angular.min.js"></script>
+
+</head>
+
+<body>
+<main ng-view ng-controller="testCtrl">
+    <h1>מדווח</h1>
+    <div><input ng-model="reporter.facebookId" placeholder="facebookId" /></div>
+    <div><input ng-model="reporter.facebookToken" placeholder="facebookToken" /></div>
+    <div><input ng-model="reporter.facebookInfoJson" placeholder="facebookInfoJson" /></div>
+    <div><input ng-model="reporter.facebookFriendsJson" placeholder="facebookFriendsJson" /></div>
+
+    <h1>אנשי קשר</h1>
+    <div ng-repeat="contact in contacts">
+        <div><input ng-model="contact.facebookId" placeholder="facebookId" /></div>
+    </div>
+    <div><button ng-click="addNewContact()">הוסף איש קשר</button></div>
+    <div><button ng-click="sendContacts(reporter, contacts)">שלח</button></div>
+</main>
+</body>
+</html>
+
+
+<script>
+    var vinderPostTest = angular.module('vinderPostTest', []).controller('testCtrl', ['$scope', '$http', function ($scope, $http){
+        $scope.reporter = {
+            facebookId          : '',
+            facebookToken       : '',
+            facebookInfoJson    : '',
+            facebookFriendsJson : ''
+        };
+        $scope.contacts = [];
+
+        $scope.addNewContact = function (){
+            $scope.contacts.push({
+                facebookId  : ''
+            });
+        };
+
+        $scope.addNewContact();
+
+        $scope.sendContacts = function (reporter, contacts){
+            $http.post('/api/reportList', { reporter: reporter, contacts: contacts }).then(function (data){
+                console.log('success');
+            }, function (err){
+                console.log(err);
+            });
+        };
+    }]);
+</script>
